@@ -20,6 +20,7 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.junit.Ignore;
 import org.junit.Test;
+import  org.hamcrest.SelfDescribing;
 
 import java.util.HashMap;
 import java.util.Map;

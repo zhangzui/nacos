@@ -32,14 +32,22 @@ import com.alibaba.nacos.api.exception.NacosException;
 public class ConfigExample {
 
 	public static void main(String[] args) throws NacosException, InterruptedException {
+
+		//配置信息
 		String serverAddr = "localhost";
-		String dataId = "test";
-		String group = "DEFAULT_GROUP";
+		String dataId = "zhangzuizui";
+		String group = "TEST";
+
+		//服务中心IP
 		Properties properties = new Properties();
 		properties.put("serverAddr", serverAddr);
+
+		//创建配置中心服务
 		ConfigService configService = NacosFactory.createConfigService(properties);
 		String content = configService.getConfig(dataId, group, 5000);
 		System.out.println(content);
+
+		//动态配置监听模式
 		configService.addListener(dataId, group, new Listener() {
 			@Override
 			public void receiveConfigInfo(String configInfo) {
@@ -51,21 +59,35 @@ public class ConfigExample {
 				return null;
 			}
 		});
-		
-		boolean isPublishOk = configService.publishConfig(dataId, group, "content");
-		System.out.println(isPublishOk);
-		
-		Thread.sleep(3000);
-		content = configService.getConfig(dataId, group, 5000);
-		System.out.println(content);
 
+		//publish配置信息
+		boolean isPublishOk = configService.publishConfig(dataId, group, "{\"name\":\"zhangzuizui\",\"age\":\"26\"}");
+		System.out.println("isPublishOk:"+isPublishOk);
+		Thread.sleep(3000);
+
+		//获取配置信息
+		content = configService.getConfig(dataId, group, 5000);
+		System.out.println("content111"+content);
+
+		//测试删除
 		boolean isRemoveOk = configService.removeConfig(dataId, group);
-		System.out.println(isRemoveOk);
+		System.out.println("isRemoveOk:"+isRemoveOk);
 		Thread.sleep(3000);
 
+		//删除后获取
 		content = configService.getConfig(dataId, group, 5000);
-		System.out.println(content);
-		Thread.sleep(300000);
+		System.out.println("content-after-remove:"+content);
+		Thread.sleep(3000);
+
+		//再次添加
+		boolean isPublishOk2 = configService.publishConfig(dataId, group, "{\"name\":\"zhangzuizui\",\"age\":\"26\"}");
+		System.out.println("isPublishOk2:"+isPublishOk2);
+		Thread.sleep(3000);
+
+		//添加完获取
+		content = configService.getConfig(dataId, group, 5000);
+		System.out.println("content222:"+content);
+		Thread.sleep(3000);
 
 	}
 }
